@@ -1,0 +1,112 @@
+<div ng-controller="ViewActivityCtrl">
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="messages" class="alert alert-{{alertStatus}}" ng-show="messages">
+                <span ng-bind="messages"></span>
+                <i class="dismiss-messages pull-right glyphicon glyphicon-remove" ng-click="messages = ''"
+                   ng-show="messages"></i>
+            </div>
+            <img class="spinner" src="/img/ajax-loader.gif" ng-show="loading"/>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h3>View activities</h3>
+        </div>
+    </div>
+	
+	<tabset id="View-activities-tab" justified="true">
+        <tab select="tabAllSelected()" heading="All"></tab>
+        <tab select="tabYouHaveCreatedSelected()" heading="You've created"></tab>
+        <tab select="tabYouWillAttendSelected()" heading="You'll attend (You've attended)"></tab>
+    </tabset>
+	
+    <div class="row row-offcanvas row-offcanvas-right" ng-class="{active: isOffcanvasEnabled}">
+        <div class="col-lg-12 col-sm-8">
+			
+			<div class="col-xs-6 col-sm-4 sidebar-offcanvas" id="sidebar" role="navigation">
+                    <form class="form-horizontal" name="filterForm" novalidate role="form" ng-hide="selectedTab != 'ALL'">
+                        <div class="form-group">
+						<select ng-init="activity.tribe = tribenames[0]" id="tribe" ng-model="activity.tribe" ng-change="filterTribes()" name="tribe" ng-options="tribename for tribename in tribenames"
+                        class="btn btn-primary ">
+						</select>
+						</div>
+                    </form>
+			</div>
+			
+	<!--		<form name="searchForm" novalidate role="form">
+				<div class="pull-right">
+						<div class="col-xs-7"><input id="search" type="text" name="search" class="form-control"></input></div>
+						<button ng-click="queryActivity(seachForm);" class="btn btn-primary">
+							<i class="glyphicon glyphicon-search"></i> Search
+						</button>
+					</div>
+			</form>
+	-->		
+			<p class="pull-right visible-xs">
+                <button ng-hide="selectedTab != 'ALL'" type="button" class="btn btn-primary btn-sm" data-toggle="offcanvas"
+                        ng-click="isOffcanvasEnabled = !isOffcanvasEnabled">
+                    <i class="glyphicon glyphicon-chevron-left" ng-show="isOffcanvasEnabled"></i>
+                    <span ng-show="isOffcanvasEnabled">Hide</span>
+                    <span ng-hide="isOffcanvasEnabled">Show</span>
+                    filters
+                    <i class="glyphicon glyphicon-chevron-right" ng-hide="isOffcanvasEnabled"></i>
+                </button>
+            </p>
+			
+            <div ng-show="submitted && activities.length == 0">
+                <h4>No matching results.</h4>
+            </div>
+			
+            <div class="table-responsive" ng-show="activities.length > 0">
+                <table id="activity-table" class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <th>Tribe</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Organizer</th>
+						<th>Current/Max</th>
+						<th>Details</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="activity in activities | startFrom: pagination.currentPage * pagination.pageSize | limitTo: pagination.pageSize">
+                        <td>{{activity.tribe}}</td>
+                        <td>{{activity.location}}</td>
+                        <td>{{activity.date | date:'dd-MMMM-yyyy'}}</td>
+                        <td>{{activity.organizerDisplayName}}</td>
+                        <td>{{activity.currentParticipants}} / {{activity.maxParticipants}}</td>
+						<td><a href="#/activity/detail/{{activity.websafeKey}}">Details</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <ul class="pagination" ng-show="activities.length > 0">
+                <li ng-class="{disabled: pagination.currentPage == 0 }">
+                    <a ng-class="{disabled: pagination.currentPage == 0 }"
+                       ng-click="pagination.isDisabled($event) || (pagination.currentPage = 0)">&lt&lt</a>
+                </li>
+                <li ng-class="{disabled: pagination.currentPage == 0 }">
+                    <a ng-class="{disabled: pagination.currentPage == 0 }"
+                       ng-click="pagination.isDisabled($event) || (pagination.currentPage = pagination.currentPage - 1)">&lt</a>
+                </li>
+
+                <li ng-repeat="page in pagination.pageArray()" ng-class="{active: $parent.pagination.currentPage == page}">
+                    <a ng-click="$parent.pagination.currentPage = page">{{page + 1}}</a>
+                </li>
+
+                <li ng-class="{disabled: pagination.currentPage == pagination.numberOfPages() - 1}">
+                    <a ng-class="{disabled: pagination.currentPage == pagination.numberOfPages() - 1}"
+                       ng-click="pagination.isDisabled($event) || (pagination.currentPage = pagination.currentPage + 1)">&gt</a>
+                </li>
+                <li ng-class="{disabled: pagination.currentPage == pagination.numberOfPages() - 1}">
+                    <a ng-class="{disabled: pagination.currentPage == pagination.numberOfPages() - 1}"
+                       ng-click="pagination.isDisabled($event) || (pagination.currentPage = pagination.numberOfPages() - 1)">&gt&gt</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

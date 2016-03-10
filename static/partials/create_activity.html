@@ -1,0 +1,85 @@
+<div ng-controller="CreateActivityCtrl">
+    <div class="row">
+        <div class="col-lg-12">
+            <div id="messages" class="alert alert-{{alertStatus}}" ng-show="messages">
+                <span ng-bind="messages"></span>
+                <i class="dismiss-messages pull-right glyphicon glyphicon-remove" ng-click="messages = ''"
+                   ng-show="messages"></i>
+            </div>
+            <img class="spinner" src="/img/ajax-loader.gif" ng-show="loading"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h3>Create an activity</h3>
+			
+            <form name="activityForm" novalidate role="form">
+                <div class="form-group">
+                    <label for="tribe">Tribe<span class="required">*</span></label>
+                    <span class="label label-danger"
+                        ng-show="activityForm.tribe.$error.required">Required!</span>
+                    <select id="tribe" ng-model="activity.tribe" name="tribe" ng-options="tribename for tribename in tribenames"
+                            class="form-control" ng-required="true">
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input id="location" type="text"ng-model="activity.location" name="location" class="form-control">
+                    </input>
+                </div>
+
+                <div class="form-group" ng-controller="DatepickerCtrl">
+                    <label for="date">Date</label>
+                    <p class="input-group">
+                        <input id="date" type="text" class="form-control" datepicker-popup="{{format}}"
+                               ng-model="activity.date" is-open="opened"
+                               datepicker-options="dateOptions"
+                               close-text="Close"/>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" ng-click="open($event)"><i
+                                class="glyphicon glyphicon-calendar"></i>
+                        </button>
+                    </span>
+                    </p>
+                </div>
+				
+				<div class="form-group" ng-controller="TimepickerCtrl">
+                    <label for="time">Time</label>
+					<span class="label label-danger"
+                        ng-show="!isValidTime()">Must be a valid time!</span>
+					<p class="input-group">
+						<input id='time' ng-model="activity.time" type="text" class="form-control"></input>
+					<span class="input-group-btn">
+						<button id='AM/PM' ng-click="switcher()" class="btn btn-default">{{ampm}}</button>
+					</span>
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="maxParticipants">Max Participants</label>
+                    <span class="label label-danger"
+                        ng-show="!isValidMaxParticipants()">Must be a number!</span>
+                    <input id="maxParticipants" type="text" name="maxParticipants" ng-model="activity.maxParticipants"
+                           class="form-control"/>
+                </div>
+				
+				<div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" type="text" name="description" ng-model="activity.description"
+                              class="form-control"></textarea>
+                </div>
+				
+				<div class="form-group">
+                    <label for="approvalNeeded">Approval Needed</label>
+                    <input id="approvalNeeded" type="checkbox" name="approvalNeeded" ng-model="activity.approvalNeeded"
+                              class="form-control"></input>
+                </div>
+
+                <button ng-click="createActivity(activityForm)" class="btn btn-primary"
+                        ng-disabled="loading">Create
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
